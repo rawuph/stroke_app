@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,8 +42,8 @@
                 <button id="restart-button" class="hidden bg-indigo-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition">Neu starten</button>
             </div>
         </div>
-        <footer class="text-center text-xs text-gray-500 mt-4">
-            Disclaimer: This is a digital representation of the provided SOPs and should not be used for clinical decision-making without consulting the official documents and qualified medical professionals.
+        <footer id="disclaimer" class="text-center text-xs text-gray-500 mt-4">
+            Haftungsausschluss: Diese Anwendung ist eine digitale Darstellung der SOPs und dient nur zu Informationszwecken. Sie ersetzt keine klinische Entscheidung. Konsultiere für Behandlungsentscheidungen immer die offiziellen Dokumente und qualifiziertes Fachpersonal.
         </footer>
     </div>
 
@@ -59,7 +59,7 @@
                     ]
                 },
                 mild_functionally_relevant: {
-                    text: "Bitte wählen Sie die Verschlusslokalisation.",
+                    text: "Bitte wähle die Verschlusslokalisation.",
                     options: [
                         { text: "ICA, Carotis T, M1", next: "mild_ica_m1" },
                         { text: "Distale Verschlüsse / Kein Verschluss", next: "mild_distal" },
@@ -106,7 +106,7 @@
             },
             major: {
                 start: {
-                    text: "Verdacht auf Major Stroke. Bitte wählen Sie die Verschlusslokalisation.",
+                    text: "Verdacht auf Major Stroke. Bitte wähle die Verschlusslokalisation.",
                     options: [
                         { text: "ICA, Carotis T, M1", next: "major_ica_m1" },
                         { text: "Distale Verschlüsse", next: "major_distal" },
@@ -204,13 +204,13 @@
                      contentDiv.prepend(questionDiv);
                 }
                 
-                // --- NEW: Check for "IVT" and add dosage info box if present ---
+                // Check for "IVT" and add dosage info box if present
                 if (node.treatment.includes("IVT")) {
                     const infoBox = document.createElement('div');
                     infoBox.className = "mt-6 text-left";
                     infoBox.innerHTML = `
                         <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-lg">
-                            <h3 class="text-lg font-bold text-blue-900 mb-2">Dosierungsberechnung basierend auf Patientengewicht</h3>
+                            <h3 class="text-lg font-bold text-blue-900 mb-2">Dosierungsberechnung basierend auf Gewicht</h3>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-sm text-gray-700">
                                     <thead class="bg-blue-100">
@@ -286,7 +286,7 @@
 
         function showInitialScreen() {
             header.textContent = 'Stroke Dienst Entscheidungshilfe';
-            contentDiv.innerHTML = '<p class="text-xl font-medium text-gray-700">Bitte wählen Sie den Schlaganfall-Typ aus, um die interaktive Richtlinie zu starten.</p>';
+            contentDiv.innerHTML = '<p class="text-xl font-medium text-gray-700">Bitte wähle den Schlaganfall-Typ aus, um die interaktive Richtlinie zu starten.</p>';
             optionsDiv.innerHTML = `
                 <button onclick="startFlow('mild')" class="option-button w-full bg-blue-500 text-white font-bold py-4 px-4 rounded-xl hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-lg">Mild Stroke</button>
                 <button onclick="startFlow('major')" class="option-button w-full bg-red-500 text-white font-bold py-4 px-4 rounded-xl hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 text-lg">Major Stroke</button>
