@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stroke Dienst Entscheidungshilfe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .option-button {
+            transition: all 0.2s ease-in-out;
+        }
+        .option-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .card {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-radius: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 flex items-center justify-center min-h-screen p-4">
+
+    <div id="app" class="w-full max-w-2xl mx-auto">
+        <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg card">
+            <h1 id="header" class="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-6">Stroke Dienst Entscheidungshilfe</h1>
+            
+            <div id="content" class="text-center">
+                <!-- Dynamic content will be injected here -->
+            </div>
+
+            <div id="options" class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Dynamic buttons will be injected here -->
+            </div>
+
+            <div class="mt-8 text-center flex justify-center items-center gap-4">
+                <button id="back-button" class="hidden bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition">Zurück</button>
+                <button id="restart-button" class="hidden bg-indigo-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition">Neu starten</button>
+            </div>
+        </div>
+        <footer class="text-center text-xs text-gray-500 mt-4">
+            Disclaimer: This is a digital representation of the provided SOPs and should not be used for clinical decision-making without consulting the official documents and qualified medical professionals.
+        </footer>
+    </div>
+
+    <script>
+        // --- DATA STRUCTURE FOR FLOWCHARTS ---
+        const flowcharts = {
+            mild: {
+                start: {
+                    text: "Verdacht auf Mild Stroke. Ist der Schlaganfall funktionell relevant?",
+                    options: [
+                        { text: "Ja", next: "mild_functionally_relevant" },
+                        { text: "Nein", next: "mild_all_non_relevant" }
+                    ]
+                },
+                mild_functionally_relevant: {
+                    text: "Bitte wählen Sie die Verschlusslokalisation.",
+                    options: [
+                        { text: "ICA, Carotis T, M1", next: "mild_ica_m1" },
+                        { text: "Distale Verschlüsse / Kein Verschluss", next: "mild_distal" },
+                        { text: "BA", next: "mild_ba" }
+                    ]
+                },
+                mild_ica_m1: {
+                    text: "Klinik: NIHSS < 6 mit funktionell relevanter Klinik. Wie ist das Zeitfenster?",
+                    options: [
+                        { text: "< 4,5h", next: "mild_ica_m1_t1" },
+                        { text: "4,5h - 24h", next: "mild_ica_m1_t2" },
+                        { text: "Wake-up / Unbekannt", next: "mild_ica_m1_t3" }
+                    ]
+                },
+                mild_ica_m1_t1: { treatment: "IVT + MTE" },
+                mild_ica_m1_t2: { treatment: "MTE bei Mismatch" },
+                mild_ica_m1_t3: { treatment: "IVT + MTE bei Mismatch" },
+                mild_distal: {
+                    text: "Klinik: NIHSS < 6 mit funktionell relevanter Klinik. Wie ist das Zeitfenster?",
+                    options: [
+                        { text: "< 4,5h", next: "mild_distal_t1" },
+                        { text: "4,5h - 24h", next: "mild_distal_t2" },
+                        { text: "Wake-up / Unbekannt", next: "mild_distal_t3" }
+                    ]
+                },
+                mild_distal_t1: { treatment: "IVT<br>(MTE bei M2: individuelle Fallentscheidung)" },
+                mild_distal_t2: { treatment: "TAH<br>(DAPT bei NIHSS ≤3)" },
+                mild_distal_t3: { treatment: "IVT bei Mismatch" },
+                mild_ba: {
+                    text: "Klinik: NIHSS < 10. Wie ist das Zeitfenster?",
+                    options: [
+                        { text: "< 4,5h", next: "mild_ba_t1" },
+                        { text: "4,5h - 24h", next: "mild_ba_t2" },
+                        { text: "Wake-up / Unbekannt", next: "mild_ba_t3" }
+                    ]
+                },
+                mild_ba_t1: { treatment: "IVT + MTE" },
+                mild_ba_t2: { treatment: "MTE bei Mismatch" },
+                mild_ba_t3: { treatment: "MTE bei Mismatch" },
+                mild_all_non_relevant: {
+                    text: "Klinik: NIHSS < 6 mit funktionell NICHT relevanter Klinik.",
+                    treatment: "Thrombozytenaggregationshemmer<br>Duale Plättchenhemmung bei NIHSS ≤3<br>(Individuelle Fallentscheidung zur MTE bei LVO)"
+                }
+            },
+            major: {
+                start: {
+                    text: "Verdacht auf Major Stroke. Bitte wählen Sie die Verschlusslokalisation.",
+                    options: [
+                        { text: "ICA, Carotis T, M1", next: "major_ica_m1" },
+                        { text: "Distale Verschlüsse", next: "major_distal" },
+                        { text: "BA", next: "major_ba" },
+                        { text: "Kein Verschluss", next: "major_no_occlusion" }
+                    ]
+                },
+                major_ica_m1: {
+                    text: "Klinik: NIHSS ≥ 6. Wie ist das Zeitfenster?",
+                    options: [
+                        { text: "< 4,5h", next: "major_ica_m1_t1" },
+                        { text: "4,5h - 6h", next: "major_ica_m1_t2" },
+                        { text: "6h - 24h", next: "major_ica_m1_t3" },
+                        { text: "Wake-up / Unbekannt", next: "major_ica_m1_t4" }
+                    ]
+                },
+                major_ica_m1_t1: { treatment: "IVT + MTE" },
+                major_ica_m1_t2: { treatment: "MTE" },
+                major_ica_m1_t3: { treatment: "MTE unter Einbezug von<br>Mismatch / ASPECTS / Kollateralen" },
+                major_ica_m1_t4: { treatment: "MTE unter Einbezug von<br>Mismatch / ASPECTS / Kollateralen" },
+                major_distal: {
+                    text: "Klinik: NIHSS ≥ 6. Wie ist das Zeitfenster?",
+                    options: [
+                        { text: "< 4,5h", next: "major_distal_t1" },
+                        { text: "4,5h - 9h", next: "major_distal_t2" },
+                        { text: "Wake-up / Unbekannt", next: "major_distal_t3" }
+                    ]
+                },
+                major_distal_t1: { treatment: "IVT<br>(M2: individuelle Fallentscheidung zur MTE)" },
+                major_distal_t2: { treatment: "IVT bei Mismatch" },
+                major_distal_t3: { treatment: "IVT bei Mismatch<br>(M2: individuelle Fallentscheidung zur MTE)" },
+                major_ba: {
+                    text: "Klinik: NIHSS ≥ 10. Wie ist das Zeitfenster?",
+                    options: [
+                        { text: "< 4,5h", next: "major_ba_t1" },
+                        { text: "4,5h - 6h", next: "major_ba_t2" },
+                        { text: "6h - 24h", next: "major_ba_t3" },
+                        { text: "Wake-up / Unbekannt", next: "major_ba_t4" }
+                    ]
+                },
+                major_ba_t1: { treatment: "IVT + MTE" },
+                major_ba_t2: { treatment: "MTE" },
+                major_ba_t3: { treatment: "MTE unter Einbezug pcASPECTS" },
+                major_ba_t4: { treatment: "IVT + MTE bei Mismatch" },
+                major_no_occlusion: {
+                    text: "Klinik: NIHSS ≥ 6. Wie ist das Zeitfenster?",
+                    options: [
+                        { text: "< 4,5h", next: "major_no_occlusion_t1" },
+                        { text: "4,5h - 9h", next: "major_no_occlusion_t2" },
+                        { text: "Wake-up / Unbekannt", next: "major_no_occlusion_t3" }
+                    ]
+                },
+                major_no_occlusion_t1: { treatment: "IVT" },
+                major_no_occlusion_t2: { treatment: "IVT bei Mismatch" },
+                major_no_occlusion_t3: { treatment: "IVT bei Mismatch" }
+            }
+        };
+
+        // --- APPLICATION LOGIC ---
+        const contentDiv = document.getElementById('content');
+        const optionsDiv = document.getElementById('options');
+        const restartButton = document.getElementById('restart-button');
+        const backButton = document.getElementById('back-button');
+        const header = document.getElementById('header');
+
+        let currentFlow = null;
+        let currentNodeKey = null;
+        let historyStack = [];
+
+        function renderStep() {
+            const node = currentFlow[currentNodeKey];
+            contentDiv.innerHTML = '';
+            optionsDiv.innerHTML = '';
+
+            // Manage button visibility
+            restartButton.classList.remove('hidden');
+            if (historyStack.length > 1) {
+                backButton.classList.remove('hidden');
+            } else {
+                backButton.classList.add('hidden');
+            }
+
+            if (node.treatment) {
+                // Display the primary treatment recommendation
+                contentDiv.innerHTML = `
+                    <h2 class="text-xl font-semibold text-gray-700 mb-2">Empfohlene Vorgehensweise:</h2>
+                    <div class="bg-green-100 border-l-4 border-green-500 text-green-800 p-4 rounded-lg text-left">
+                        <p class="text-lg font-bold">${node.treatment}</p>
+                    </div>
+                `;
+                if(node.text) {
+                     const questionDiv = document.createElement('p');
+                     questionDiv.className = "text-lg text-gray-600 mb-6";
+                     questionDiv.innerHTML = node.text;
+                     contentDiv.prepend(questionDiv);
+                }
+                
+                // --- NEW: Check for "IVT" and add dosage info box if present ---
+                if (node.treatment.includes("IVT")) {
+                    const infoBox = document.createElement('div');
+                    infoBox.className = "mt-6 text-left";
+                    infoBox.innerHTML = `
+                        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-lg">
+                            <h3 class="text-lg font-bold text-blue-900 mb-2">Dosierungsberechnung basierend auf Patientengewicht</h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-gray-700">
+                                    <thead class="bg-blue-100">
+                                        <tr>
+                                            <th class="px-4 py-2 font-semibold">Gewicht</th>
+                                            <th class="px-4 py-2 font-semibold">Dosis</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-blue-200">
+                                            <td class="px-4 py-2">&lt;60 kg</td>
+                                            <td class="px-4 py-2">3 ml (15 mg)</td>
+                                        </tr>
+                                        <tr class="border-b border-blue-200">
+                                            <td class="px-4 py-2">60 to &lt;70 kg</td>
+                                            <td class="px-4 py-2">3.5 ml (17.5 mg)</td>
+                                        </tr>
+                                        <tr class="border-b border-blue-200">
+                                            <td class="px-4 py-2">70 to &lt;80 kg</td>
+                                            <td class="px-4 py-2">4 ml (20 mg)</td>
+                                        </tr>
+                                        <tr class="border-b border-blue-200">
+                                            <td class="px-4 py-2">80 to &lt;90 kg</td>
+                                            <td class="px-4 py-2">4.5 ml (22.5 mg)</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-4 py-2">90+ kg</td>
+                                            <td class="px-4 py-2">5 ml (25 mg)</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `;
+                    contentDiv.appendChild(infoBox);
+                }
+
+            } else {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = "text-xl font-medium text-gray-700";
+                questionDiv.innerHTML = node.text;
+                contentDiv.appendChild(questionDiv);
+
+                node.options.forEach(option => {
+                    const button = document.createElement('button');
+                    button.innerHTML = option.text;
+                    button.className = 'option-button w-full bg-white border-2 border-indigo-200 text-indigo-700 font-semibold py-3 px-4 rounded-lg hover:bg-indigo-50 hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500';
+                    button.onclick = () => {
+                        currentNodeKey = option.next;
+                        historyStack.push(currentNodeKey);
+                        renderStep();
+                    };
+                    optionsDiv.appendChild(button);
+                });
+            }
+        }
+        
+        function goBack() {
+            if (historyStack.length > 1) {
+                historyStack.pop();
+                currentNodeKey = historyStack[historyStack.length - 1];
+                renderStep();
+            }
+        }
+
+        function startFlow(flowName) {
+            currentFlow = flowcharts[flowName];
+            currentNodeKey = 'start';
+            historyStack = ['start'];
+            header.textContent = flowName === 'mild' ? 'Mild Stroke Pathway' : 'Major Stroke Pathway';
+            renderStep();
+        }
+
+        function showInitialScreen() {
+            header.textContent = 'Stroke Dienst Entscheidungshilfe';
+            contentDiv.innerHTML = '<p class="text-xl font-medium text-gray-700">Bitte wählen Sie den Schlaganfall-Typ aus, um die interaktive Richtlinie zu starten.</p>';
+            optionsDiv.innerHTML = `
+                <button onclick="startFlow('mild')" class="option-button w-full bg-blue-500 text-white font-bold py-4 px-4 rounded-xl hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-lg">Mild Stroke</button>
+                <button onclick="startFlow('major')" class="option-button w-full bg-red-500 text-white font-bold py-4 px-4 rounded-xl hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 text-lg">Major Stroke</button>
+            `;
+            historyStack = [];
+            restartButton.classList.add('hidden');
+            backButton.classList.add('hidden');
+        }
+
+        restartButton.addEventListener('click', showInitialScreen);
+        backButton.addEventListener('click', goBack);
+
+        window.onload = showInitialScreen;
+    </script>
+</body>
+</html>
