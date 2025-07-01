@@ -43,7 +43,7 @@
             </div>
         </div>
         <footer id="disclaimer" class="text-center text-xs text-gray-500 mt-4">
-            Haftungsausschluss: Diese Anwendung ist eine digitale Darstellung der SOPs und dient nur zu Informationszwecken. Sie ersetzt keine klinische Entscheidung. Konsultiere für Behandlungsentscheidungen immer die offiziellen Dokumente und qualifiziertes Fachpersonal.
+            Haftungsausschluss: Diese Anwendung ist eine digitale Darstellung der SOPs und dient nur zu Informationszwecken. Sie ersetzt keine klinische Entscheidung. Konsultiere für Behandlungsentscheidungen immer die offiziellen Dokumente.
         </footer>
     </div>
 
@@ -52,7 +52,7 @@
         const flowcharts = {
             mild: {
                 start: {
-                    text: "Verdacht auf Mild Stroke. Ist der Schlaganfall funktionell relevant?",
+                    text: "Ist der Schlaganfall funktionell relevant?",
                     options: [
                         { text: "Ja", next: "mild_functionally_relevant" },
                         { text: "Nein", next: "mild_all_non_relevant" }
@@ -106,7 +106,7 @@
             },
             major: {
                 start: {
-                    text: "Verdacht auf Major Stroke. Bitte wähle die Verschlusslokalisation.",
+                    text: "Bitte wähle die Verschlusslokalisation.",
                     options: [
                         { text: "ICA, Carotis T, M1", next: "major_ica_m1" },
                         { text: "Distale Verschlüsse", next: "major_distal" },
@@ -280,7 +280,7 @@
             currentFlow = flowcharts[flowName];
             currentNodeKey = 'start';
             historyStack = ['start'];
-            header.textContent = flowName === 'mild' ? 'Mild Stroke Pathway' : 'Major Stroke Pathway';
+            header.textContent = flowName === 'mild' ? 'Minor Stroke Pathway' : 'Major Stroke Pathway';
             renderStep();
         }
 
@@ -288,8 +288,14 @@
             header.textContent = 'Stroke Dienst Entscheidungshilfe';
             contentDiv.innerHTML = '<p class="text-xl font-medium text-gray-700">Bitte wähle den Schlaganfall-Typ aus, um die interaktive Richtlinie zu starten.</p>';
             optionsDiv.innerHTML = `
-                <button onclick="startFlow('mild')" class="option-button w-full bg-blue-500 text-white font-bold py-4 px-4 rounded-xl hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-lg">Mild Stroke</button>
-                <button onclick="startFlow('major')" class="option-button w-full bg-red-500 text-white font-bold py-4 px-4 rounded-xl hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 text-lg">Major Stroke</button>
+                <button onclick="startFlow('mild')" class="option-button w-full bg-blue-500 text-white font-bold py-3 px-4 rounded-xl hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-lg flex flex-col items-center justify-center">
+                    <span>Minor Stroke</span>
+                    <span class="text-sm font-normal mt-1">NIHSS &lt; 6 (BA &lt; 10)</span>
+                </button>
+                <button onclick="startFlow('major')" class="option-button w-full bg-red-500 text-white font-bold py-3 px-4 rounded-xl hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 text-lg flex flex-col items-center justify-center">
+                    <span>Major Stroke</span>
+                    <span class="text-sm font-normal mt-1">NIHSS &ge; 6 (BA &ge; 10)</span>
+                </button>
             `;
             historyStack = [];
             restartButton.classList.add('hidden');
