@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stroke Dienst Entscheidungshilfe</title>
+    <title>Stroke Entscheidungshilfe</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -27,7 +27,7 @@
 
     <div id="app" class="w-full max-w-2xl mx-auto">
         <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg card">
-            <h1 id="header" class="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-6">Stroke Dienst Entscheidungshilfe</h1>
+            <h1 id="header" class="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-6">Stroke Entscheidungshilfe</h1>
             
             <div id="content" class="text-center">
                 <!-- Dynamic content will be injected here -->
@@ -334,8 +334,8 @@
         }
 
         function showInitialScreen() {
-            header.textContent = 'Stroke Dienst Entscheidungshilfe';
-            contentDiv.innerHTML = '<p class="text-xl font-medium text-gray-700">Bitte wähle den Schlaganfall-Typ aus, um die interaktive Richtlinie zu starten.</p>';
+            header.textContent = 'Stroke Entscheidungshilfe';
+            contentDiv.innerHTML = '<p class="text-xl font-medium text-gray-700">Bitte wähle den Schlaganfall-Typ aus, um die interaktive Entscheidungshilfe zu starten.</p>';
             optionsDiv.innerHTML = `
                 <button onclick="startFlow('mild')" class="option-button w-full bg-blue-500 text-white font-bold py-3 px-4 rounded-xl hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-lg flex flex-col items-center justify-center">
                     <span>Minor Stroke</span>
