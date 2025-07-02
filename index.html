@@ -48,7 +48,7 @@
     </div>
 
     <script>
-        // --- DATA STRUCTURE FOR FLOWCHARTS ---
+        // --- DATA STRUCTURE FOR FLOWCHARTS (Updated based on new PPT) ---
         const flowcharts = {
             mild: {
                 start: {
@@ -61,7 +61,7 @@
                 mild_functionally_relevant: {
                     text: "Bitte wähle die Verschlusslokalisation.",
                     options: [
-                        { text: "ICA, Carotis T, M1", next: "mild_ica_m1" },
+                        { text: "ICA, Carotis T, M1, „dominanter“ M2-Ast", next: "mild_ica_m1" },
                         { text: "Distale Verschlüsse / Kein Verschluss", next: "mild_distal" },
                         { text: "BA", next: "mild_ba" }
                     ]
@@ -75,7 +75,7 @@
                     ]
                 },
                 mild_ica_m1_t1: { treatment: "IVT + MTE" },
-                mild_ica_m1_t2: { treatment: "MTE bei Mismatch" },
+                mild_ica_m1_t2: { treatment: "MTE als individuelle Fallentscheidung" },
                 mild_ica_m1_t3: { treatment: "IVT + MTE bei Mismatch" },
                 mild_distal: {
                     text: "Klinik: NIHSS < 6 mit funktionell relevanter Klinik. Wie ist das Zeitfenster?",
@@ -85,30 +85,38 @@
                         { text: "Wake-up / Unbekannt", next: "mild_distal_t3" }
                     ]
                 },
-                mild_distal_t1: { treatment: "IVT<br>(MTE bei M2: individuelle Fallentscheidung)" },
+                mild_distal_t1: { treatment: "IVT<br>(MTE bei non-dominantem M2-Ast als individuelle Fallentscheidung)" },
                 mild_distal_t2: { treatment: "TAH<br>(DAPT bei NIHSS ≤3)" },
-                mild_distal_t3: { treatment: "IVT bei Mismatch" },
+                mild_distal_t3: { treatment: "IVT<br>(MTE bei non-dominantem M2-Ast als individuelle Fallentscheidung)" },
                 mild_ba: {
-                    text: "Klinik: NIHSS < 10. Wie ist das Zeitfenster?",
+                    text: "Klinik: Wie hoch ist der NIHSS Score?",
                     options: [
-                        { text: "< 4,5h", next: "mild_ba_t1" },
-                        { text: "4,5h - 24h", next: "mild_ba_t2" },
-                        { text: "Wake-up / Unbekannt", next: "mild_ba_t3" }
+                        { text: "NIHSS 6-10", next: "mild_ba_nihss_high" },
+                        { text: "NIHSS < 6", next: "mild_ba_nihss_low" }
                     ]
                 },
-                mild_ba_t1: { treatment: "IVT + MTE" },
-                mild_ba_t2: { treatment: "MTE bei Mismatch" },
-                mild_ba_t3: { treatment: "MTE bei Mismatch" },
+                mild_ba_nihss_high: {
+                    text: "Klinik: NIHSS 6-10. Wie ist das Zeitfenster?",
+                     options: [
+                        { text: "< 4,5h", next: "mild_ba_high_t1" },
+                        { text: "4,5h - 24h", next: "mild_ba_high_t2" },
+                        { text: "Wake-up / Unbekannt", next: "mild_ba_high_t3" }
+                    ]
+                },
+                mild_ba_high_t1: { treatment: "IVT + MTE als individuelle Fallentscheidung" },
+                mild_ba_high_t2: { treatment: "IVT" },
+                mild_ba_high_t3: { treatment: "IVT + MTE unter Einbezug pcASPECTS als individuelle Fallentscheidung" },
+                mild_ba_nihss_low: { treatment: "IVT" },
                 mild_all_non_relevant: {
                     text: "Klinik: NIHSS < 6 mit funktionell NICHT relevanter Klinik.",
-                    treatment: "Thrombozytenaggregationshemmer<br>Duale Plättchenhemmung bei NIHSS ≤3<br>(Individuelle Fallentscheidung zur MTE bei LVO)"
+                    treatment: "TAH<br>(DAPT bei NIHSS ≤3)<br>MTE als individuelle Fallentscheidung in Ausnahmefällen"
                 }
             },
             major: {
                 start: {
                     text: "Bitte wähle die Verschlusslokalisation.",
                     options: [
-                        { text: "ICA, Carotis T, M1", next: "major_ica_m1" },
+                        { text: "ICA, Carotis T, M1, „dominanter“ M2-Ast", next: "major_ica_m1" },
                         { text: "Distale Verschlüsse", next: "major_distal" },
                         { text: "BA", next: "major_ba" },
                         { text: "Kein Verschluss", next: "major_no_occlusion" }
@@ -123,8 +131,8 @@
                         { text: "Wake-up / Unbekannt", next: "major_ica_m1_t4" }
                     ]
                 },
-                major_ica_m1_t1: { treatment: "IVT + MTE" },
-                major_ica_m1_t2: { treatment: "MTE" },
+                major_ica_m1_t1: { treatment: "IVT + MTE<br>(ASPECT 0-2 individuelle Fallentscheidung)" },
+                major_ica_m1_t2: { treatment: "MTE<br>(ASPECTS 0-2 individuelle Fallentscheidung)" },
                 major_ica_m1_t3: { treatment: "MTE unter Einbezug von<br>Mismatch / ASPECTS / Kollateralen" },
                 major_ica_m1_t4: { treatment: "MTE unter Einbezug von<br>Mismatch / ASPECTS / Kollateralen" },
                 major_distal: {
@@ -135,9 +143,9 @@
                         { text: "Wake-up / Unbekannt", next: "major_distal_t3" }
                     ]
                 },
-                major_distal_t1: { treatment: "IVT<br>(M2: individuelle Fallentscheidung zur MTE)" },
+                major_distal_t1: { treatment: "IVT<br>(„non-dominanter M2 Ast“, distale M2: individuelle Fallentscheidung zur MTE -6h)" },
                 major_distal_t2: { treatment: "IVT bei Mismatch" },
-                major_distal_t3: { treatment: "IVT bei Mismatch<br>(M2: individuelle Fallentscheidung zur MTE)" },
+                major_distal_t3: { treatment: "IVT bei Mismatch<br>(„non-dominanter M2 Ast“, distale M2: individuelle Fallentscheidung zur MTE)" },
                 major_ba: {
                     text: "Klinik: NIHSS ≥ 10. Wie ist das Zeitfenster?",
                     options: [
@@ -150,7 +158,7 @@
                 major_ba_t1: { treatment: "IVT + MTE" },
                 major_ba_t2: { treatment: "MTE" },
                 major_ba_t3: { treatment: "MTE unter Einbezug pcASPECTS" },
-                major_ba_t4: { treatment: "IVT + MTE bei Mismatch" },
+                major_ba_t4: { treatment: "MTE unter Einbezug pcASPECTS" },
                 major_no_occlusion: {
                     text: "Klinik: NIHSS ≥ 6. Wie ist das Zeitfenster?",
                     options: [
