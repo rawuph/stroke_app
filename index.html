@@ -48,7 +48,7 @@
     </div>
 
     <script>
-        // --- DATA STRUCTURE FOR FLOWCHARTS (Updated based on new PPT) ---
+        // --- DATA STRUCTURE FOR FLOWCHARTS (Updated with image link) ---
         const flowcharts = {
             mild: {
                 start: {
@@ -75,7 +75,10 @@
                     ]
                 },
                 mild_ica_m1_t1: { treatment: "IVT + MTE" },
-                mild_ica_m1_t2: { treatment: "MTE als individuelle Fallentscheidung" },
+                mild_ica_m1_t2: { 
+                    treatment: "MTE als individuelle Fallentscheidung",
+                    image: "https://imgur.com/a/mJtMrEX" // Image added here
+                },
                 mild_ica_m1_t3: { treatment: "IVT + MTE bei Mismatch" },
                 mild_distal: {
                     text: "Klinik: NIHSS < 6 mit funktionell relevanter Klinik. Wie ist das Zeitfenster?",
@@ -211,6 +214,14 @@
                      questionDiv.innerHTML = node.text;
                      contentDiv.prepend(questionDiv);
                 }
+
+                // Check for and display an image if one is defined for the node
+                if (node.image) {
+                    const imageContainer = document.createElement('div');
+                    imageContainer.className = "mt-4";
+                    imageContainer.innerHTML = `<img src="${node.image}" alt="Zusätzliche Information" class="w-full h-auto rounded-lg shadow-md border">`;
+                    contentDiv.appendChild(imageContainer);
+                }
                 
                 // Check for "IVT" and add dosage info box if present
                 if (node.treatment.includes("IVT")) {
@@ -218,36 +229,29 @@
                     infoBox.className = "mt-6 text-left";
                     infoBox.innerHTML = `
                         <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-lg">
-                            <h3 class="text-lg font-bold text-blue-900 mb-2">Dosierungsberechnung basierend auf Gewicht</h3>
+                            <h3 class="text-lg font-bold text-blue-900 mb-2">Dosierungsschema Metalyse® 0,25 mg/kg Bolus</h3>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-sm text-gray-700">
                                     <thead class="bg-blue-100">
                                         <tr>
-                                            <th class="px-4 py-2 font-semibold">Gewicht</th>
-                                            <th class="px-4 py-2 font-semibold">Dosis</th>
+                                            <th class="px-4 py-2 font-semibold">Gewicht (kg)</th>
+                                            <th class="px-4 py-2 font-semibold">Dosis (mg)</th>
+                                            <th class="px-4 py-2 font-semibold">Dosis (U)</th>
+                                            <th class="px-4 py-2 font-semibold">Bolus (ml)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr class="border-b border-blue-200">
-                                            <td class="px-4 py-2">&lt;60 kg</td>
-                                            <td class="px-4 py-2">3 ml (15 mg)</td>
-                                        </tr>
-                                        <tr class="border-b border-blue-200">
-                                            <td class="px-4 py-2">60 to &lt;70 kg</td>
-                                            <td class="px-4 py-2">3.5 ml (17.5 mg)</td>
-                                        </tr>
-                                        <tr class="border-b border-blue-200">
-                                            <td class="px-4 py-2">70 to &lt;80 kg</td>
-                                            <td class="px-4 py-2">4 ml (20 mg)</td>
-                                        </tr>
-                                        <tr class="border-b border-blue-200">
-                                            <td class="px-4 py-2">80 to &lt;90 kg</td>
-                                            <td class="px-4 py-2">4.5 ml (22.5 mg)</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="px-4 py-2">90+ kg</td>
-                                            <td class="px-4 py-2">5 ml (25 mg)</td>
-                                        </tr>
+                                        <tr class="border-b border-blue-200"><td class="px-4 py-2">50</td><td class="px-4 py-2">12,5</td><td class="px-4 py-2">2500</td><td class="px-4 py-2">2,5</td></tr>
+                                        <tr class="border-b border-blue-200"><td class="px-4 py-2">55</td><td class="px-4 py-2">13,8</td><td class="px-4 py-2">2750</td><td class="px-4 py-2">2,8</td></tr>
+                                        <tr class="border-b border-blue-200"><td class="px-4 py-2">60</td><td class="px-4 py-2">15</td><td class="px-4 py-2">3000</td><td class="px-4 py-2">3</td></tr>
+                                        <tr class="border-b border-blue-200"><td class="px-4 py-2">65</td><td class="px-4 py-2">16,3</td><td class="px-4 py-2">3250</td><td class="px-4 py-2">3,3</td></tr>
+                                        <tr class="border-b border-blue-200"><td class="px-4 py-2">70</td><td class="px-4 py-2">17,5</td><td class="px-4 py-2">3500</td><td class="px-4 py-2">3,5</td></tr>
+                                        <tr class="border-b border-blue-200"><td class="px-4 py-2">75</td><td class="px-4 py-2">18,8</td><td class="px-4 py-2">3750</td><td class="px-4 py-2">3,8</td></tr>
+                                        <tr class="border-b border-blue-200"><td class="px-4 py-2">80</td><td class="px-4 py-2">20</td><td class="px-4 py-2">4000</td><td class="px-4 py-2">4</td></tr>
+                                        <tr class="border-b border-blue-200"><td class="px-4 py-2">85</td><td class="px-4 py-2">21,3</td><td class="px-4 py-2">4250</td><td class="px-4 py-2">4,3</td></tr>
+                                        <tr class="border-b border-blue-200"><td class="px-4 py-2">90</td><td class="px-4 py-2">22,5</td><td class="px-4 py-2">4500</td><td class="px-4 py-2">4,5</td></tr>
+                                        <tr class="border-b border-blue-200"><td class="px-4 py-2">95</td><td class="px-4 py-2">23,8</td><td class="px-4 py-2">4750</td><td class="px-4 py-2">4,8</td></tr>
+                                        <tr><td class="px-4 py-2">≥100</td><td class="px-4 py-2">25</td><td class="px-4 py-2">5000</td><td class="px-4 py-2">5</td></tr>
                                     </tbody>
                                 </table>
                             </div>
