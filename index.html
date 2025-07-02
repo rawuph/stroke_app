@@ -48,7 +48,7 @@
     </div>
 
     <script>
-        // --- DATA STRUCTURE FOR FLOWCHARTS (Updated with image link) ---
+        // --- DATA STRUCTURE FOR FLOWCHARTS (Updated with pcASPECTS score) ---
         const flowcharts = {
             mild: {
                 start: {
@@ -77,7 +77,7 @@
                 mild_ica_m1_t1: { treatment: "IVT + MTE" },
                 mild_ica_m1_t2: { 
                     treatment: "MTE als individuelle Fallentscheidung",
-                    image: "https://imgur.com/a/mJtMrEX" // Image added here
+                    image: "https://i.imgur.com/3zJ8Z7c.jpeg"
                 },
                 mild_ica_m1_t3: { treatment: "IVT + MTE bei Mismatch" },
                 mild_distal: {
@@ -108,7 +108,10 @@
                 },
                 mild_ba_high_t1: { treatment: "IVT + MTE als individuelle Fallentscheidung" },
                 mild_ba_high_t2: { treatment: "IVT" },
-                mild_ba_high_t3: { treatment: "IVT + MTE unter Einbezug pcASPECTS als individuelle Fallentscheidung" },
+                mild_ba_high_t3: { 
+                    treatment: "IVT + MTE unter Einbezug <a href='https://www.stroke-manual.com/aspect-score/' target='_blank' class='text-blue-600 hover:underline'>pcASPECTS</a> (≥6) als individuelle Fallentscheidung",
+                    image2: "https://prod-images-static.radiopaedia.org/images/51808754/51699eb1f2a66d4fb62cd942538da5_big_gallery.jpeg"
+                },
                 mild_ba_nihss_low: { treatment: "IVT" },
                 mild_all_non_relevant: {
                     text: "Klinik: NIHSS < 6 mit funktionell NICHT relevanter Klinik.",
@@ -134,10 +137,22 @@
                         { text: "Wake-up / Unbekannt", next: "major_ica_m1_t4" }
                     ]
                 },
-                major_ica_m1_t1: { treatment: "IVT + MTE<br>(ASPECT 0-2 individuelle Fallentscheidung)" },
-                major_ica_m1_t2: { treatment: "MTE<br>(ASPECTS 0-2 individuelle Fallentscheidung)" },
-                major_ica_m1_t3: { treatment: "MTE unter Einbezug von<br>Mismatch / ASPECTS / Kollateralen" },
-                major_ica_m1_t4: { treatment: "MTE unter Einbezug von<br>Mismatch / ASPECTS / Kollateralen" },
+                major_ica_m1_t1: { 
+                    treatment: "IVT + MTE<br>(<a href='https://www.stroke-manual.com/aspect-score/' target='_blank' class='text-blue-600 hover:underline'>ASPECTS</a> 0-2 individuelle Fallentscheidung)",
+                    image3: "https://prod-images-static.radiopaedia.org/images/51808752/5481778ba66760e4c364e008255014_big_gallery.jpeg"
+                },
+                major_ica_m1_t2: { 
+                    treatment: "MTE<br>(<a href='https://www.stroke-manual.com/aspect-score/' target='_blank' class='text-blue-600 hover:underline'>ASPECTS</a> 0-2 individuelle Fallentscheidung)",
+                    image3: "https://prod-images-static.radiopaedia.org/images/51808752/5481778ba66760e4c364e008255014_big_gallery.jpeg"
+                },
+                major_ica_m1_t3: { 
+                    treatment: "MTE unter Einbezug von<br>Mismatch / <a href='https://www.stroke-manual.com/aspect-score/' target='_blank' class='text-blue-600 hover:underline'>ASPECTS</a> / Kollateralen",
+                    image3: "https://prod-images-static.radiopaedia.org/images/51808752/5481778ba66760e4c364e008255014_big_gallery.jpeg"
+                },
+                major_ica_m1_t4: { 
+                    treatment: "MTE unter Einbezug von<br>Mismatch / <a href='https://www.stroke-manual.com/aspect-score/' target='_blank' class='text-blue-600 hover:underline'>ASPECTS</a> / Kollateralen",
+                    image3: "https://prod-images-static.radiopaedia.org/images/51808752/5481778ba66760e4c364e008255014_big_gallery.jpeg"
+                },
                 major_distal: {
                     text: "Klinik: NIHSS ≥ 6. Wie ist das Zeitfenster?",
                     options: [
@@ -160,8 +175,14 @@
                 },
                 major_ba_t1: { treatment: "IVT + MTE" },
                 major_ba_t2: { treatment: "MTE" },
-                major_ba_t3: { treatment: "MTE unter Einbezug pcASPECTS" },
-                major_ba_t4: { treatment: "MTE unter Einbezug pcASPECTS" },
+                major_ba_t3: { 
+                    treatment: "MTE unter Einbezug <a href='https://www.stroke-manual.com/aspect-score/' target='_blank' class='text-blue-600 hover:underline'>pcASPECTS</a> (≥6)",
+                    image2: "https://prod-images-static.radiopaedia.org/images/51808754/51699eb1f2a66d4fb62cd942538da5_big_gallery.jpeg"
+                },
+                major_ba_t4: { 
+                    treatment: "MTE unter Einbezug <a href='https://www.stroke-manual.com/aspect-score/' target='_blank' class='text-blue-600 hover:underline'>pcASPECTS</a> (≥6)",
+                    image2: "https://prod-images-static.radiopaedia.org/images/51808754/51699eb1f2a66d4fb62cd942538da5_big_gallery.jpeg"
+                },
                 major_no_occlusion: {
                     text: "Klinik: NIHSS ≥ 6. Wie ist das Zeitfenster?",
                     options: [
@@ -221,6 +242,22 @@
                     imageContainer.className = "mt-4";
                     imageContainer.innerHTML = `<img src="${node.image}" alt="Zusätzliche Information" class="w-full h-auto rounded-lg shadow-md border">`;
                     contentDiv.appendChild(imageContainer);
+                }
+
+                // Check for and display the second image if one is defined for the node
+                if (node.image2) {
+                    const imageContainer2 = document.createElement('div');
+                    imageContainer2.className = "mt-4";
+                    imageContainer2.innerHTML = `<img src="${node.image2}" alt="pcASPECTS Information" class="w-full h-auto rounded-lg shadow-md border">`;
+                    contentDiv.appendChild(imageContainer2);
+                }
+
+                // Check for and display the third image if one is defined for the node
+                if (node.image3) {
+                    const imageContainer3 = document.createElement('div');
+                    imageContainer3.className = "mt-4";
+                    imageContainer3.innerHTML = `<img src="${node.image3}" alt="ASPECTS Information" class="w-full h-auto rounded-lg shadow-md border">`;
+                    contentDiv.appendChild(imageContainer3);
                 }
                 
                 // Check for "IVT" and add dosage info box if present
