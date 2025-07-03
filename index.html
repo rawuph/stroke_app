@@ -179,7 +179,7 @@
                 },
                 major_ba_t4: { 
                     treatment: "MTE unter Einbezug <a href='https://www.stroke-manual.com/aspect-score/' target='_blank' class='text-blue-600 hover:underline'>pcASPECTS</a> (≥6)",
-                    image2: "https://prod-images-static.radiopaedia.org/images/51808754/51699eb1f2a66d4fb62cd942538da5_big_gallery.jpeg"
+                    image2: "https://prod-images-static.radiopaedia.org/images/51808754/5169eb1f2a66d4fb62cd942538da5_big_gallery.jpeg"
                 },
                 major_no_occlusion: {
                     text: "Klinik: NIHSS ≥ 6. Wie ist das Zeitfenster?",
@@ -316,7 +316,10 @@
                     button.innerHTML = option.text;
                     button.className = 'option-button w-full bg-white border-2 border-indigo-200 text-indigo-700 font-semibold py-3 px-4 rounded-lg hover:bg-indigo-50 hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500';
                     button.onclick = () => {
-                        pathHistory.push(option.text);
+                        const isFirstMildQuestion = (currentFlow === flowcharts.mild && currentNodeKey === 'start');
+                        if (!isFirstMildQuestion) {
+                            pathHistory.push(option.text);
+                        }
                         currentNodeKey = option.next;
                         historyStack.push(currentNodeKey);
                         renderStep();
@@ -328,8 +331,15 @@
         
         function goBack() {
             if (historyStack.length > 1) {
+                // Only remove from path history if it wasn't the first mild question
+                const lastNodeKey = historyStack[historyStack.length - 2];
+                const lastFlow = currentFlow;
+                const wasFirstMildQuestion = (lastFlow === flowcharts.mild && lastNodeKey === 'start');
+
+                if (!wasFirstMildQuestion) {
+                    pathHistory.pop();
+                }
                 historyStack.pop();
-                pathHistory.pop();
                 currentNodeKey = historyStack[historyStack.length - 1];
                 renderStep();
             }
