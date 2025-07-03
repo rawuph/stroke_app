@@ -48,7 +48,7 @@
     </div>
 
     <script>
-        // --- DATA STRUCTURE FOR FLOWCHARTS (Updated with pcASPECTS score) ---
+        // --- DATA STRUCTURE FOR FLOWCHARTS ---
         const flowcharts = {
             mild: {
                 start: {
@@ -207,6 +207,7 @@
         let currentFlow = null;
         let currentNodeKey = null;
         let historyStack = [];
+        let pathHistory = []; // To store the text of user's choices
 
         function renderStep() {
             const node = currentFlow[currentNodeKey];
@@ -222,18 +223,27 @@
             }
 
             if (node.treatment) {
+                // Display the full path as a title
+                const pathTitle = document.createElement('h2');
+                pathTitle.className = "text-md font-semibold text-gray-500 mb-4 leading-tight";
+                pathTitle.innerHTML = pathHistory.join('<br>');
+                contentDiv.appendChild(pathTitle);
+
                 // Display the primary treatment recommendation
-                contentDiv.innerHTML = `
+                const treatmentDiv = document.createElement('div');
+                treatmentDiv.innerHTML = `
                     <h2 class="text-xl font-semibold text-gray-700 mb-2">Empfohlene Vorgehensweise:</h2>
                     <div class="bg-green-100 border-l-4 border-green-500 text-green-800 p-4 rounded-lg text-left">
                         <p class="text-lg font-bold">${node.treatment}</p>
                     </div>
                 `;
+                contentDiv.appendChild(treatmentDiv);
+
                 if(node.text) {
                      const questionDiv = document.createElement('p');
                      questionDiv.className = "text-lg text-gray-600 mb-6";
                      questionDiv.innerHTML = node.text;
-                     contentDiv.prepend(questionDiv);
+                     treatmentDiv.prepend(questionDiv);
                 }
 
                 // Check for and display an image if one is defined for the node
@@ -308,6 +318,7 @@
                     button.innerHTML = option.text;
                     button.className = 'option-button w-full bg-white border-2 border-indigo-200 text-indigo-700 font-semibold py-3 px-4 rounded-lg hover:bg-indigo-50 hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500';
                     button.onclick = () => {
+                        pathHistory.push(option.text);
                         currentNodeKey = option.next;
                         historyStack.push(currentNodeKey);
                         renderStep();
@@ -320,15 +331,17 @@
         function goBack() {
             if (historyStack.length > 1) {
                 historyStack.pop();
+                pathHistory.pop();
                 currentNodeKey = historyStack[historyStack.length - 1];
                 renderStep();
             }
         }
 
-        function startFlow(flowName) {
+        function startFlow(flowName, flowText) {
             currentFlow = flowcharts[flowName];
             currentNodeKey = 'start';
             historyStack = ['start'];
+            pathHistory = [flowText];
             header.textContent = flowName === 'mild' ? 'Minor Stroke Pathway' : 'Major Stroke Pathway';
             renderStep();
         }
@@ -337,16 +350,17 @@
             header.textContent = 'Stroke Entscheidungshilfe';
             contentDiv.innerHTML = '<p class="text-xl font-medium text-gray-700">Bitte wähle den Schlaganfall-Typ aus, um die interaktive Entscheidungshilfe zu starten.</p>';
             optionsDiv.innerHTML = `
-                <button onclick="startFlow('mild')" class="option-button w-full bg-blue-500 text-white font-bold py-3 px-4 rounded-xl hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-lg flex flex-col items-center justify-center">
+                <button onclick="startFlow('mild', 'Minor Stroke')" class="option-button w-full bg-blue-500 text-white font-bold py-3 px-4 rounded-xl hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-lg flex flex-col items-center justify-center">
                     <span>Minor Stroke</span>
                     <span class="text-sm font-normal mt-1">NIHSS &lt; 6 (BA &lt; 10)</span>
                 </button>
-                <button onclick="startFlow('major')" class="option-button w-full bg-red-500 text-white font-bold py-3 px-4 rounded-xl hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 text-lg flex flex-col items-center justify-center">
+                <button onclick="startFlow('major', 'Major Stroke')" class="option-button w-full bg-red-500 text-white font-bold py-3 px-4 rounded-xl hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 text-lg flex flex-col items-center justify-center">
                     <span>Major Stroke</span>
                     <span class="text-sm font-normal mt-1">NIHSS &ge; 6 (BA &ge; 10)</span>
                 </button>
             `;
             historyStack = [];
+            pathHistory = [];
             restartButton.classList.add('hidden');
             backButton.classList.add('hidden');
         }
