@@ -30,12 +30,10 @@
             <h1 id="header" class="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-6">Stroke Entscheidungshilfe</h1>
             
             <div id="content" class="text-center">
-                <!-- Dynamic content will be injected here -->
-            </div>
+                </div>
 
             <div id="options" class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <!-- Dynamic buttons will be injected here -->
-            </div>
+                </div>
 
             <div class="mt-8 text-center flex justify-center items-center gap-4">
                 <button id="back-button" class="hidden bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition">Zurück</button>
@@ -342,7 +340,7 @@
             currentNodeKey = 'start';
             historyStack = ['start'];
             pathHistory = [flowText];
-            header.textContent = flowName === 'mild' ? 'Minor Stroke Pathway' : 'Major Stroke Pathway';
+            header.textContent = 'Stroke Entscheidungshilfe';
             renderStep();
         }
 
@@ -350,11 +348,11 @@
             header.textContent = 'Stroke Entscheidungshilfe';
             contentDiv.innerHTML = '<p class="text-xl font-medium text-gray-700">Bitte wähle den Schlaganfall-Typ aus, um die interaktive Entscheidungshilfe zu starten.</p>';
             optionsDiv.innerHTML = `
-                <button onclick="startFlow('mild', 'Minor Stroke')" class="option-button w-full bg-blue-500 text-white font-bold py-3 px-4 rounded-xl hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-lg flex flex-col items-center justify-center">
+                <button onclick="startFlow('mild', 'NIHSS &lt; 6 (BA &lt; 10)')" class="option-button w-full bg-blue-500 text-white font-bold py-3 px-4 rounded-xl hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-lg flex flex-col items-center justify-center">
                     <span>Minor Stroke</span>
                     <span class="text-sm font-normal mt-1">NIHSS &lt; 6 (BA &lt; 10)</span>
                 </button>
-                <button onclick="startFlow('major', 'Major Stroke')" class="option-button w-full bg-red-500 text-white font-bold py-3 px-4 rounded-xl hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 text-lg flex flex-col items-center justify-center">
+                <button onclick="startFlow('major', 'NIHSS &ge; 6 (BA &ge; 10)')" class="option-button w-full bg-red-500 text-white font-bold py-3 px-4 rounded-xl hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 text-lg flex flex-col items-center justify-center">
                     <span>Major Stroke</span>
                     <span class="text-sm font-normal mt-1">NIHSS &ge; 6 (BA &ge; 10)</span>
                 </button>
